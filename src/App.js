@@ -43,9 +43,10 @@ const App = () => {
     address: {},
 
     //packed items
-    packedItems: [packedItems],
+    pack: [],
   });
-
+  console.log("APP FORM", formData);
+  console.log("PACKED ITEMS", packedItems[0]);
   //adding a received parcel to new parcel
   function handleAddToParcel(parcel) {
     //updating packed items state
@@ -55,9 +56,6 @@ const App = () => {
       receivedParcel.filter((i) => i.trackingNumber !== parcel.trackingNumber)
     );
   }
-  console.log("PACKED ITEMS", packedItems);
-  console.log("RECEIVED ITEMS", receivedParcel);
-  console.log("FORM DATA", formData);
 
   //deleting parcel from new parcel
   function handleDeleteParcel(parcel) {
@@ -99,6 +97,7 @@ const App = () => {
             element={
               <NewParcel
                 packedItems={packedItems}
+                setPackedItems={setPackedItems}
                 handleDeleteParcel={handleDeleteParcel}
                 formData={formData}
                 setFormData={setFormData}

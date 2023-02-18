@@ -7,10 +7,7 @@ const NewParcel = ({
   handleDeleteParcel,
   formData,
   setFormData,
-  handleAddons,
-  selectedAddons,
-  setSelectedAddons,
-  addons,
+  setPackedItems,
 }) => {
   if (packedItems.length > 0) {
     return (
@@ -56,10 +53,8 @@ const NewParcel = ({
         <MultiStepForm
           setFormData={setFormData}
           formData={formData}
-          handleAddons={handleAddons}
-          selectedAddons={selectedAddons}
-          setSelectedAddons={setSelectedAddons}
-          addons={addons}
+          packedItems={packedItems}
+          setPackedItems={setPackedItems}
         />
       </>
     );

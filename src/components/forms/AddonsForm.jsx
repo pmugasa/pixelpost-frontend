@@ -43,12 +43,9 @@ const AddonsForm = ({ setFormData, formData }) => {
           { name: addons[position].name, price: addons[position].price },
         ],
       });
-      console.log("Checked Name:", addons[position].name);
-      console.log("Checked Value:", addons[position].price);
     }
   }
-  console.log("Total Price", total);
-  console.log("form data", formData);
+
   return (
     <>
       <div className="">

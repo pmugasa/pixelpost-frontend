@@ -1,5 +1,4 @@
 const Received = ({ receivedParcel, handleAddToParcel }) => {
-  console.log(receivedParcel.length);
   if (receivedParcel.length <= 0) {
     return (
       <div className="  mt-2 p-2 w-full flex flex-col justify-center items-center">

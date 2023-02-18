@@ -3,10 +3,29 @@ import AddonsForm from "./AddonsForm";
 import AddressForm from "./AddressForm";
 import CustomsForm from "./CustomsForm";
 
-const MultiStepForm = ({ formData, setFormData }) => {
+const MultiStepForm = ({
+  formData,
+  setFormData,
+  packedItems,
+  setPackedItems,
+}) => {
   const [page, setPage] = useState(0);
 
   const formTitles = ["Customs", "Delivery Address", "Addons"];
+  console.log(packedItems);
+  const handleFormSubmit = () => {
+    setFormData({
+      ...formData,
+      pack: packedItems.forEach((element) => {
+        formData.pack.push(element);
+      }),
+    });
+    setFormData(formData);
+    setPackedItems([]);
+
+    console.log("FORM SUBMITTED");
+    console.log("FORM DATA AFTER SUBMIT:", formData);
+  };
   //displaying the forms
   const PageDisplay = () => {
     if (page === 0) {
@@ -26,6 +45,7 @@ const MultiStepForm = ({ formData, setFormData }) => {
           <div className="flex mt-4 p-4">
             <button
               className="btn btn-primary btn-sm mr-auto"
+              type="button"
               disabled={page === 0}
               onClick={() => {
                 setPage((currentPage) => currentPage - 1);
@@ -33,19 +53,23 @@ const MultiStepForm = ({ formData, setFormData }) => {
             >
               Prev
             </button>
-            <button
-              className="btn btn-primary btn-sm  "
-              onClick={() => {
-                if (page === formTitles.length - 1) {
-                  console.log(formData);
-                  setFormData(formData);
-                } else {
-                  setPage((currentPage) => currentPage + 1);
-                }
-              }}
-            >
-              {page === formTitles.length - 1 ? "Request Packing" : "Next"}
-            </button>
+            {page === formTitles.length - 1 ? (
+              <button
+                type="button"
+                onClick={handleFormSubmit}
+                className="btn btn-success btn-sm"
+              >
+                Submit
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary btn-sm "
+                onClick={() => setPage((currentPage) => currentPage + 1)}
+              >
+                Next
+              </button>
+            )}
           </div>
         </div>
       </div>
