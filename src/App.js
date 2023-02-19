@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dashboard from "./pages/Dashboard";
 import Received from "./pages/parcel/Received";
 import NewParcel from "./pages/parcel/NewParcel";
@@ -9,6 +9,7 @@ import Profile from "./pages/user/Profile";
 import Login from "./pages/user/Login";
 import Signup from "./pages/user/Signup";
 import Navbar from "./components/Navbar";
+import loginService from "./services/login";
 
 const App = () => {
   const [email, setEmail] = useState("");
@@ -31,7 +32,7 @@ const App = () => {
       weight: 1,
     },
   ]);
-
+  const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     //customs items
     customsItems: [],
@@ -45,8 +46,27 @@ const App = () => {
     //packed items
     pack: [],
   });
-  console.log("APP FORM", formData);
-  console.log("PACKED ITEMS", packedItems[0]);
+
+  //handle login
+  async function handleLogin(e) {
+    e.preventDefault();
+    try {
+      const user = await loginService.login({ email, password });
+
+      //saving token to local storage
+      window.localStorage.setItem("loggedPixelPostUser", JSON.stringify(user));
+      setUser(user);
+
+      //resetting login form
+      setEmail("");
+      setPassword("");
+    } catch (exception) {
+      console.log(exception);
+    }
+  }
+
+  console.log("logged in user", user);
+
   //adding a received parcel to new parcel
   function handleAddToParcel(parcel) {
     //updating packed items state
@@ -104,7 +124,10 @@ const App = () => {
               />
             }
           />
-          <Route path="/ready-to-send" element={<ReadyToSend />} />
+          <Route
+            path="/ready-to-send"
+            element={<ReadyToSend formData={formData} />}
+          />
           <Route path="/shipping-rates" element={<ShippingRates />} />
           <Route path="/profile" element={<Profile />} />
           <Route

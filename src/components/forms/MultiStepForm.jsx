@@ -10,26 +10,39 @@ const MultiStepForm = ({
   setPackedItems,
 }) => {
   const [page, setPage] = useState(0);
-
+  const [formFields, setFormFields] = useState([
+    { description: "", value_amount: "", quantity: "", net_weight: "" },
+  ]);
   const formTitles = ["Customs", "Delivery Address", "Addons"];
   console.log(packedItems);
-  const handleFormSubmit = () => {
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
     setFormData({
       ...formData,
       pack: packedItems.forEach((element) => {
         formData.pack.push(element);
       }),
+      customsItems: formFields.forEach((element) => {
+        formData.customsItems.push(element);
+      }),
     });
     setFormData(formData);
     setPackedItems([]);
 
-    console.log("FORM SUBMITTED");
     console.log("FORM DATA AFTER SUBMIT:", formData);
   };
   //displaying the forms
   const PageDisplay = () => {
     if (page === 0) {
-      return <CustomsForm formData={formData} setFormData={setFormData} />;
+      return (
+        <CustomsForm
+          formData={formData}
+          setFormData={setFormData}
+          packedItems={packedItems}
+          formFields={formFields}
+          setFormFields={setFormFields}
+        />
+      );
     } else if (page === 1) {
       return <AddressForm formData={formData} setFormData={setFormData} />;
     } else {
@@ -55,7 +68,7 @@ const MultiStepForm = ({
             </button>
             {page === formTitles.length - 1 ? (
               <button
-                type="button"
+                type="submit"
                 onClick={handleFormSubmit}
                 className="btn btn-success btn-sm"
               >
