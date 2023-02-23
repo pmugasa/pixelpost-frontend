@@ -1,7 +1,8 @@
 import { useState } from "react";
-import AddonsForm from "./AddonsForm";
 import AddressForm from "./AddressForm";
 import CustomsForm from "./CustomsForm";
+import packingService from "../../services/packing";
+import orderService from "../../services/order";
 
 const MultiStepForm = ({
   formData,
@@ -13,20 +14,22 @@ const MultiStepForm = ({
   const [formFields, setFormFields] = useState([
     { description: "", value_amount: "", quantity: "", net_weight: "" },
   ]);
-  const formTitles = ["Customs", "Delivery Address", "Addons"];
+  const formTitles = ["Customs", "Delivery Address"];
   console.log(packedItems);
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormData({
       ...formData,
-      pack: packedItems.forEach((element) => {
-        formData.pack.push(element);
+      parcels: packedItems.forEach((element) => {
+        formData.parcels.push(element);
       }),
       customsItems: formFields.forEach((element) => {
         formData.customsItems.push(element);
       }),
     });
     setFormData(formData);
+    await packingService.pack(formData);
+    await orderService.orderDetails(formData);
     setPackedItems([]);
 
     console.log("FORM DATA AFTER SUBMIT:", formData);
@@ -45,8 +48,6 @@ const MultiStepForm = ({
       );
     } else if (page === 1) {
       return <AddressForm formData={formData} setFormData={setFormData} />;
-    } else {
-      return <AddonsForm formData={formData} setFormData={setFormData} />;
     }
   };
 

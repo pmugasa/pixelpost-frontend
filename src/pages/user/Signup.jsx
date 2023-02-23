@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Signup = ({ password, setPassword, email, setEmail, handleLogin }) => {
+const Signup = ({ password, setPassword, email, setEmail, handleSignup }) => {
   return (
     <>
       <div className="p-8 w-full flex justify-center items-center h-screen overflow-auto">
@@ -8,7 +8,7 @@ const Signup = ({ password, setPassword, email, setEmail, handleLogin }) => {
           <div>
             <p className="text-center font-bold text-2xl">Signup</p>
           </div>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleSignup}>
             <div className="form-control w-full ">
               <div className="mt-8">
                 <input

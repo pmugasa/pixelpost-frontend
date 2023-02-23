@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Dashboard from "./pages/Dashboard";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 import Received from "./pages/parcel/Received";
 import NewParcel from "./pages/parcel/NewParcel";
 import ReadyToSend from "./pages/parcel/ReadyToSend";
@@ -8,8 +8,12 @@ import ShippingRates from "./pages/shipping/ShippingRates";
 import Profile from "./pages/user/Profile";
 import Login from "./pages/user/Login";
 import Signup from "./pages/user/Signup";
-import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import loginService from "./services/login";
+import signupService from "./services/signup";
+import packService from "./services/packing";
+import orderService from "./services/order";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const [email, setEmail] = useState("");
@@ -44,8 +48,9 @@ const App = () => {
     address: {},
 
     //packed items
-    pack: [],
+    parcels: [],
   });
+  const navigate = useNavigate();
 
   //handle login
   async function handleLogin(e) {
@@ -55,9 +60,39 @@ const App = () => {
 
       //saving token to local storage
       window.localStorage.setItem("loggedPixelPostUser", JSON.stringify(user));
+      packService.setToken(user.token);
+      orderService.setToken(user.token);
       setUser(user);
+      navigate("/received", { replace: true });
 
       //resetting login form
+      setEmail("");
+      setPassword("");
+    } catch (exception) {
+      console.log(exception);
+    }
+  }
+
+  // handle logout
+  async function handleLogout() {
+    setUser(null);
+    window.localStorage.removeItem("loggedPixelPostUser");
+    navigate("/login", { replace: true });
+  }
+  //handle signup
+  async function handleSignup(e) {
+    e.preventDefault();
+
+    try {
+      const user = await signupService.signup({ email, password });
+
+      //saving token to local storage
+      window.localStorage.setItem("loggedPixelPostUser", JSON.stringify(user));
+      packService.setToken(user.token);
+      setUser(user);
+      navigate("/received", { replace: true });
+
+      //resetting the form
       setEmail("");
       setPassword("");
     } catch (exception) {
@@ -86,23 +121,17 @@ const App = () => {
       )
     );
   }
-
-  //Login user
-  function handleLogin(e) {
-    e.preventDefault();
-    console.log(email);
-    console.log(password);
-
-    setEmail("");
-    setPassword("");
+  if (!user) {
   }
-
   return (
     <>
-      <Router>
-        <Navbar packedItems={packedItems} receivedParcel={receivedParcel} />
-        <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
+      <Navbar
+        packedItems={packedItems}
+        receivedParcel={receivedParcel}
+        handleLogout={handleLogout}
+      />
+      <Routes>
+        <Route element={<ProtectedRoute user={user} />}>
           <Route
             path="/received"
             element={
@@ -121,30 +150,47 @@ const App = () => {
                 handleDeleteParcel={handleDeleteParcel}
                 formData={formData}
                 setFormData={setFormData}
+                user={user}
               />
             }
           />
           <Route
             path="/ready-to-send"
-            element={<ReadyToSend formData={formData} />}
-          />
-          <Route path="/shipping-rates" element={<ShippingRates />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route
-            path="/login"
             element={
-              <Login
-                email={email}
-                setEmail={setEmail}
-                setPassword={setPassword}
-                password={password}
-                handleLogin={handleLogin}
-              />
+              <ProtectedRoute user={user}>
+                <ReadyToSend formData={formData} />
+              </ProtectedRoute>
             }
           />
-          <Route path="/create-account" element={<Signup />} />
-        </Routes>
-      </Router>
+          <Route path="/profile" element={<Profile user={user} />} />
+        </Route>
+        <Route path="/shipping-rates" element={<ShippingRates />} />
+
+        <Route
+          path="/login"
+          element={
+            <Login
+              email={email}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              password={password}
+              handleLogin={handleLogin}
+            />
+          }
+        />
+        <Route
+          path="/create-account"
+          element={
+            <Signup
+              email={email}
+              setEmail={setEmail}
+              setPassword={setPassword}
+              password={password}
+              handleSignup={handleSignup}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

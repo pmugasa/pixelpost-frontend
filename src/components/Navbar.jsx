@@ -8,7 +8,7 @@ import {
   faCircleUser,
   faCalculator,
 } from "@fortawesome/free-solid-svg-icons";
-const Navbar = ({ packedItems, receivedParcel }) => {
+const Navbar = ({ packedItems, receivedParcel, handleLogout }) => {
   return (
     <>
       <nav className="bg-primary flex p-2 w-screen">
@@ -60,7 +60,7 @@ const Navbar = ({ packedItems, receivedParcel }) => {
               <span className="hidden lg:block">Profile</span>
             </Link>
           </li>
-          <li>
+          <li onClick={handleLogout}>
             <FontAwesomeIcon icon={faRightFromBracket} size="lg" />
             <span className="hidden lg:block">Logout</span>
           </li>

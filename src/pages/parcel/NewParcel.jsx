@@ -1,14 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import MultiStepForm from "../../components/forms/MultiStepForm";
+import Addons from "../../components/forms/AddonsForm";
 
-const NewParcel = ({
-  packedItems,
-  handleDeleteParcel,
-  formData,
-  setFormData,
-  setPackedItems,
-}) => {
+const NewParcel = ({ packedItems, handleDeleteParcel, user }) => {
   if (packedItems.length > 0) {
     return (
       <>
@@ -27,7 +21,7 @@ const NewParcel = ({
 
                       <div className="mx-4  my-auto w-44 flex space-x-2 ">
                         <p className="text-base font-semibold">
-                          Shipment: {packedItems[i].trackinNumber}
+                          Shipment: {packedItems[i].trackingNumber}
                         </p>
                         <div className="space-x-2 ">
                           <p className="badge badge-ghost badge-sm">
@@ -50,12 +44,7 @@ const NewParcel = ({
             </div>
           );
         })}
-        <MultiStepForm
-          setFormData={setFormData}
-          formData={formData}
-          packedItems={packedItems}
-          setPackedItems={setPackedItems}
-        />
+        <Addons packedItems={packedItems} user={user} />
       </>
     );
   } else {

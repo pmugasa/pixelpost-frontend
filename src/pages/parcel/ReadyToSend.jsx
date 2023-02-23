@@ -31,15 +31,6 @@ const ReadyToSend = ({ formData }) => {
     },
   ];
 
-  const parcel = {
-    length: 5,
-    width: 5,
-    height: 5,
-    distance_unit: "cm",
-    weight: 2,
-    mass_unit: "kg",
-  };
-
   console.log("form in ready to send", formData);
 
   //getting the value of selected shipping rate
