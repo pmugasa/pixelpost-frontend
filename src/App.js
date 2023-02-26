@@ -17,6 +17,7 @@ import PackingRequest from "./pages/PackingRequest";
 import PackingRequestDetails from "./pages/PackingRequestDetails";
 import Ship from "./pages/Ship";
 import ShipmentRates from "./pages/ShipmentRates";
+import Payment from "./pages/Payment";
 
 const App = () => {
   const [email, setEmail] = useState("");
@@ -39,6 +40,9 @@ const App = () => {
       weight: 1,
     },
   ]);
+  //selected rate state
+  const [selectedRate, setSelectedRate] = useState("");
+
   const [user, setUser] = useState(null);
   //packing requests
   const packingRequests = [
@@ -157,7 +161,19 @@ const App = () => {
           element={<PackingRequestDetails packingRequest={packingRequest} />}
         />
         <Route path="/ship" element={<Ship />} />
-        <Route path="/shipment-rates" element={<ShipmentRates />} />
+        <Route
+          path="/shipment-rates"
+          element={
+            <ShipmentRates
+              selectedRate={selectedRate}
+              setSelectedRate={setSelectedRate}
+            />
+          }
+        />
+        <Route
+          path="/payment"
+          element={<Payment selectedRate={selectedRate} />}
+        />
         <Route
           path="/login"
           element={
