@@ -1,4 +1,4 @@
-const CustomsForm = ({ formData, setFormData, formFields, setFormFields }) => {
+const CustomsForm = ({ formFields, setFormFields }) => {
   //handle data change from the inputs
   const handleFormChange = (index, e) => {
     let data = [...formFields];
@@ -12,7 +12,6 @@ const CustomsForm = ({ formData, setFormData, formFields, setFormFields }) => {
       description: "",
       value_amount: "",
       quantity: "",
-      net_weight: "",
     };
     setFormFields([...formFields, newField]);
   };
@@ -23,24 +22,31 @@ const CustomsForm = ({ formData, setFormData, formFields, setFormFields }) => {
       setFormFields(newFields);
     }
   };
-  console.log("customs form data", formFields);
+
   return (
     <>
-      <div className=" w-96">
+      <div className=" ">
         <div className="mb-4">
-          <h3 className="text-center text-gray-500 text-lg font-bold">
+          <h3 className="text-center text-primary text-lg font-bold">
             CUSTOMS DECLARATION
           </h3>
         </div>
 
         <div>
+          <div className="grid grid-cols-5 gap-x-2">
+            <p className=" font-semibold text-gray-400 col-span-3 w-full ">
+              Description
+            </p>
+
+            <p className="font-semibold text-gray-400 w-12 text-left">Value</p>
+            <p className="font-semibold text-gray-400 w-12 text-left">
+              Quantity
+            </p>
+          </div>
           {formFields.map((input, index) => {
             return (
               <div key={index}>
-                <div>
-                  <label className="label">
-                    <span className="label-text">Item description</span>
-                  </label>
+                <div className="grid grid-cols-5 gap-x-2">
                   <input
                     type="text"
                     name="description"
@@ -48,59 +54,32 @@ const CustomsForm = ({ formData, setFormData, formFields, setFormFields }) => {
                     onChange={(e) => handleFormChange(index, e)}
                     placeholder="e.g running shoes"
                     required
-                    className="input input-bordered w-full "
+                    className="input input-bordered col-span-3 w-full  "
                   />
 
-                  <div className="">
-                    <div className="">
-                      <label className="label">
-                        <span className="label-text">Item value</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="value_amount"
-                        value={input.value_amount}
-                        onChange={(e) => handleFormChange(index, e)}
-                        inputMode="numeric"
-                        placeholder="R1 000.00"
-                        required
-                        className="input input-bordered  w-full "
-                      />
-                    </div>
+                  <input
+                    type="text"
+                    name="value_amount"
+                    value={input.value_amount}
+                    onChange={(e) => handleFormChange(index, e)}
+                    inputMode="numeric"
+                    placeholder="R1 000"
+                    required
+                    className="input input-bordered  "
+                  />
 
-                    <div className="">
-                      <label className="label">
-                        <span className="label-text">Quantity</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="quantity"
-                        value={input.quantity}
-                        onChange={(e) => handleFormChange(index, e)}
-                        inputMode="numeric"
-                        placeholder="1"
-                        required
-                        className="input input-bordered  w-full "
-                      />
-                    </div>
-
-                    <div className="">
-                      <label className="label">
-                        <span className="label-text">Weight (kg)</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="net_weight"
-                        value={input.net_weight}
-                        onChange={(e) => handleFormChange(index, e)}
-                        inputMode="numeric"
-                        placeholder="1"
-                        required
-                        className="input input-bordered  w-full "
-                      />
-                    </div>
-                  </div>
+                  <input
+                    type="text"
+                    name="quantity"
+                    value={input.quantity}
+                    onChange={(e) => handleFormChange(index, e)}
+                    inputMode="numeric"
+                    placeholder="1"
+                    required
+                    className="input input-bordered   "
+                  />
                 </div>
+
                 <button onClick={addFields}>Add more...</button>
                 {index > 0 && (
                   <button onClick={() => removeFields(index)}>Remove...</button>

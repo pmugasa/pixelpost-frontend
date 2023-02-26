@@ -1,19 +1,22 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useMatch } from "react-router-dom";
 import { useState } from "react";
 
 import Received from "./pages/parcel/Received";
-import NewParcel from "./pages/parcel/NewParcel";
-import ReadyToSend from "./pages/parcel/ReadyToSend";
-import ShippingRates from "./pages/shipping/ShippingRates";
+
+import Home from "./pages/Home";
 import Profile from "./pages/user/Profile";
 import Login from "./pages/user/Login";
 import Signup from "./pages/user/Signup";
-import ProtectedRoute from "./components/ProtectedRoute";
+
 import loginService from "./services/login";
 import signupService from "./services/signup";
 import packService from "./services/packing";
-import orderService from "./services/order";
+
 import Navbar from "./components/Navbar";
+import PackingRequest from "./pages/PackingRequest";
+import PackingRequestDetails from "./pages/PackingRequestDetails";
+import Ship from "./pages/Ship";
+import ShipmentRates from "./pages/ShipmentRates";
 
 const App = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +26,7 @@ const App = () => {
     {
       dateReceived: " 13 Feb 2023",
       trackingNumber: "TRN3202384923",
-      weight: 2,
+      weight: 3,
     },
     {
       dateReceived: " 16 Feb 2023",
@@ -37,19 +40,39 @@ const App = () => {
     },
   ]);
   const [user, setUser] = useState(null);
-  const [formData, setFormData] = useState({
-    //customs items
-    customsItems: [],
+  //packing requests
+  const packingRequests = [
+    {
+      requestNumber: "R123455",
+      weight: 5,
+      dateCreated: "26 Feb 2023",
+      dimensions: "L 20 x W 20 H 10",
+      items: ["TRN123450000", "TRN1234566887", "TRN123456789"],
+    },
+    {
+      requestNumber: "R13454",
+      weight: null,
+      dateCreated: "25 Feb 2023",
+      dimensions: null,
+      items: ["TRN123450000", "TRN1234566887", "TRN123456789"],
+    },
+    {
+      requestNumber: "R13453",
+      weight: null,
+      dateCreated: "25 Feb 2023",
+      dimensions: null,
+      items: ["TRN123450000", "TRN1234566887", "TRN123456789"],
+    },
+  ];
 
-    //addons
-    addons: [],
+  //matching a specific route to a packing request
+  const match = useMatch("/packing-requests/:id");
 
-    //address
-    address: {},
+  //packing request to be rendered when a link is clicked
+  const packingRequest = match
+    ? packingRequests.find((pR) => pR.requestNumber === match.params.id)
+    : null;
 
-    //packed items
-    parcels: [],
-  });
   const navigate = useNavigate();
 
   //handle login
@@ -60,10 +83,10 @@ const App = () => {
 
       //saving token to local storage
       window.localStorage.setItem("loggedPixelPostUser", JSON.stringify(user));
-      packService.setToken(user.token);
-      orderService.setToken(user.token);
+      // packService.setToken(user.token);
+      // orderService.setToken(user.token);
       setUser(user);
-      navigate("/received", { replace: true });
+      navigate("/", { replace: true });
 
       //resetting login form
       setEmail("");
@@ -100,72 +123,41 @@ const App = () => {
     }
   }
 
-  console.log("logged in user", user);
-
-  //adding a received parcel to new parcel
-  function handleAddToParcel(parcel) {
-    //updating packed items state
-    setPackedItems([...packedItems, parcel]);
-    //items available in received after adding to parcel
-    setReceivedParcel(
-      receivedParcel.filter((i) => i.trackingNumber !== parcel.trackingNumber)
-    );
-  }
-
-  //deleting parcel from new parcel
-  function handleDeleteParcel(parcel) {
-    setReceivedParcel([...receivedParcel, parcel]);
-    setPackedItems(
-      packedItems.filter(
-        (item) => item.trackingNumber !== parcel.trackingNumber
-      )
-    );
-  }
-  if (!user) {
-  }
   return (
     <>
-      <Navbar
-        packedItems={packedItems}
-        receivedParcel={receivedParcel}
-        handleLogout={handleLogout}
-      />
-      <Routes>
-        <Route element={<ProtectedRoute user={user} />}>
-          <Route
-            path="/received"
-            element={
-              <Received
-                receivedParcel={receivedParcel}
-                handleAddToParcel={handleAddToParcel}
-              />
-            }
-          />
-          <Route
-            path="/new-parcel"
-            element={
-              <NewParcel
-                packedItems={packedItems}
-                setPackedItems={setPackedItems}
-                handleDeleteParcel={handleDeleteParcel}
-                formData={formData}
-                setFormData={setFormData}
-                user={user}
-              />
-            }
-          />
-          <Route
-            path="/ready-to-send"
-            element={
-              <ProtectedRoute user={user}>
-                <ReadyToSend formData={formData} />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/profile" element={<Profile user={user} />} />
-        </Route>
-        <Route path="/shipping-rates" element={<ShippingRates />} />
+      {user ? (
+        <Navbar
+          packedItems={packedItems}
+          receivedParcel={receivedParcel}
+          handleLogout={handleLogout}
+        />
+      ) : null}
 
+      <Routes>
+        <Route path="/" element={<Home user={user} />} />
+        <Route
+          path="/received"
+          element={
+            <Received
+              user={user}
+              setReceivedParcel={setReceivedParcel}
+              receivedParcel={receivedParcel}
+            />
+          }
+        />
+
+        <Route path="/profile" element={<Profile user={user} />} />
+
+        <Route
+          path="/packing-requests"
+          element={<PackingRequest packingRequests={packingRequests} />}
+        />
+        <Route
+          path="/packing-requests/:id"
+          element={<PackingRequestDetails packingRequest={packingRequest} />}
+        />
+        <Route path="/ship" element={<Ship />} />
+        <Route path="/shipment-rates" element={<ShipmentRates />} />
         <Route
           path="/login"
           element={

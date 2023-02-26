@@ -32,13 +32,11 @@ const Login = ({ password, setPassword, email, setEmail, handleLogin }) => {
                 Login
               </button>
               <div className="form-control mt-4">
+                <p>Don't have an account?</p>
                 <p>
-                  Don't have an account?{" "}
-                  <span>
-                    <Link to="/create-account" className="link link-primary">
-                      Create an account
-                    </Link>
-                  </span>
+                  <Link to="/create-account" className="link link-primary">
+                    Create an account
+                  </Link>
                 </p>
               </div>
             </div>

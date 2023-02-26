@@ -6,7 +6,7 @@ import {
   faPaperPlane,
   faBoxArchive,
   faCircleUser,
-  faCalculator,
+  faHome,
 } from "@fortawesome/free-solid-svg-icons";
 const Navbar = ({ packedItems, receivedParcel, handleLogout }) => {
   return (
@@ -18,7 +18,13 @@ const Navbar = ({ packedItems, receivedParcel, handleLogout }) => {
           </Link>
         </div>
 
-        <ul className="menu menu-horizontal flex justify-center space-x-6  w-full mx-auto ">
+        <ul className="menu menu-horizontal flex justify-center space-x-2  w-full mx-auto ">
+          <li>
+            <Link to="/">
+              <FontAwesomeIcon icon={faHome} size="lg" />
+              <span className="hidden lg:block">Home</span>
+            </Link>
+          </li>
           <li>
             <Link to="/received" className="indicator">
               <div className="indicator">
@@ -48,12 +54,7 @@ const Navbar = ({ packedItems, receivedParcel, handleLogout }) => {
               <span className="hidden lg:block">Ready To Send</span>
             </Link>
           </li>
-          <li>
-            <Link to="/shipping-rates">
-              <FontAwesomeIcon icon={faCalculator} size="lg" />
-              <span className="hidden lg:block">Shipping Rates</span>
-            </Link>
-          </li>
+
           <li>
             <Link to="/profile">
               <FontAwesomeIcon icon={faCircleUser} size="lg" />
