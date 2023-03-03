@@ -1,14 +1,20 @@
 import { useState } from "react";
 import ReceivedItem from "../../components/ReceivedItem";
-import packingService from "../../services/packing";
+//import packingService from "../../services/packing";
 
-const Received = ({ receivedParcel, setReceivedParcel, user }) => {
+const Received = ({
+  receivedParcel,
+  setReceivedParcel,
+  user,
+  packingRequests,
+  setPackingRequests,
+}) => {
   const [checkedItems, setCheckedItems] = useState([]);
   const [checkedState, setCheckedState] = useState(
     new Array(receivedParcel.length).fill(false)
   );
 
-  console.log("token", user.token);
+  //console.log("token", user.token);
   //input button change
   const handleOnChange = (position) => {
     //reverse the value if it matches the index
@@ -22,6 +28,15 @@ const Received = ({ receivedParcel, setReceivedParcel, user }) => {
     if (updatedCheckedState[position]) {
       const { trackingNumber } = receivedParcel[position];
       setCheckedItems([...checkedItems, trackingNumber]);
+      setPackingRequests([
+        ...packingRequests,
+        {
+          requestNumber: `PR${Math.floor(100000 + Math.random() * 900000)}`,
+          dateCreated: Date.now().toString(),
+          dimensions: null,
+          items: checkedItems,
+        },
+      ]);
     } else {
       const updatedShipmentAddons = checkedItems.filter(
         (item) =>
@@ -31,20 +46,23 @@ const Received = ({ receivedParcel, setReceivedParcel, user }) => {
       setCheckedItems(updatedShipmentAddons);
     }
   };
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+
     //send checked items to backend
     try {
       // adding token to headers
-      packingService.setToken(user.token);
-      const packingRequest = await packingService.pack(checkedItems);
+      //packingService.setToken(user.token);
+      //const packingRequest = await packingService.pack(checkedItems);
 
       //getting items that are unchecked
       const uncheckedItems = receivedParcel.filter((item, index) => {
         return !checkedState[index];
       });
 
-      console.log(packingRequest);
+      console.log("checked items", checkedItems);
+
+      console.log("packing request", packingRequests);
 
       // update the state of receivedParcel to exclude the selected items
       setReceivedParcel(uncheckedItems);
@@ -55,7 +73,7 @@ const Received = ({ receivedParcel, setReceivedParcel, user }) => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   if (receivedParcel.length <= 0) {
     return (

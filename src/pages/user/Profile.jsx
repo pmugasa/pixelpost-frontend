@@ -1,4 +1,4 @@
-const Profile = ({ user }) => {
-  return <div>Logged in as {user.email}</div>;
+const Profile = () => {
+  return <div>Logged in as </div>;
 };
 export default Profile;

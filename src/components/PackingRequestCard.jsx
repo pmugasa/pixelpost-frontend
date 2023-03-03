@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 const PackingRequestCard = ({ packingRequest }) => {
   const navigate = useNavigate();
   const handleClick = () => {
-    navigate("/ship");
+    navigate("/additional-services");
   };
   return (
     <>

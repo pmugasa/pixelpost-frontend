@@ -1,5 +1,4 @@
 import { useState } from "react";
-import packingServices from "../../services/packing";
 
 const AddonsForm = ({ packedItems, user }) => {
   const addons = [
@@ -57,20 +56,14 @@ const AddonsForm = ({ packedItems, user }) => {
       addons: shipmentAddons,
     };
     console.log(formData);
-    try {
-      await packingServices.pack(formData);
-      packingServices.setToken(user.token);
-    } catch (error) {
-      console.log("error", error);
-    }
   }
-  console.log("SHIPMENT ADDONS", shipmentAddons);
+
   return (
     <>
       <div className="">
         <div className="mb-4">
           <h3 className="text-center text-lg text-gray-500 font-bold ">
-            ADDONS
+            Additional Services
           </h3>
         </div>
         <div className="divider"></div>
@@ -100,7 +93,8 @@ const AddonsForm = ({ packedItems, user }) => {
               );
             })}
           </ul>
-          <button type="submit" className="btn btn-success btn-xs">
+
+          <button type="submit" className="btn btn-primary btn-block">
             submit
           </button>
         </form>

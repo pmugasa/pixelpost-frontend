@@ -7,7 +7,8 @@ import Home from "./pages/Home";
 import Profile from "./pages/user/Profile";
 import Login from "./pages/user/Login";
 import Signup from "./pages/user/Signup";
-
+import Orders from "./pages/Orders";
+import OrderDetails from "./pages/OrderDetails";
 import loginService from "./services/login";
 import signupService from "./services/signup";
 import packService from "./services/packing";
@@ -15,6 +16,7 @@ import packService from "./services/packing";
 import Navbar from "./components/Navbar";
 import PackingRequest from "./pages/PackingRequest";
 import PackingRequestDetails from "./pages/PackingRequestDetails";
+import AdditionalServices from "./pages/AdditionalServices";
 import Ship from "./pages/Ship";
 import ShipmentRates from "./pages/ShipmentRates";
 import Payment from "./pages/Payment";
@@ -45,7 +47,7 @@ const App = () => {
 
   const [user, setUser] = useState(null);
   //packing requests
-  const packingRequests = [
+  const [packingRequests, setPackingRequests] = useState([
     {
       requestNumber: "R123455",
       weight: 5,
@@ -67,7 +69,98 @@ const App = () => {
       dimensions: null,
       items: ["TRN123450000", "TRN1234566887", "TRN123456789"],
     },
+  ]);
+
+  //orders
+  const orders = [
+    {
+      orderNumber: "O1234",
+      dateCreated: "02 March 2023",
+      trackingNumber: "TRN1234567890",
+      trackingLink: "www.google.com",
+      deliveryAddress: {
+        fullName: "Pete Mugasa",
+        street1: "6682 Emerald Road",
+        city: "Harare",
+        zip: "00263",
+        country: "Zimbabwe",
+        phone: "0772448456",
+      },
+      courier: "DHL",
+      addons: [
+        {
+          name: "Item photos",
+          price: 100,
+        },
+        {
+          name: "Bubble wrap",
+          price: 50,
+        },
+      ],
+      processingFee: 100,
+      shipmentRate: 3000,
+    },
+    {
+      orderNumber: "O5584",
+      dateCreated: "03 March 2023",
+      trackingNumber: "TRN12345000",
+      trackingLink: "www.google.com",
+      deliveryAddress: {
+        fullName: "Pete Mugasa",
+        street1: "6682 Emerald Road",
+        city: "Harare",
+        zip: "00263",
+        country: "Zimbabwe",
+        phone: "0772448456",
+      },
+      courier: "DHL Exporess",
+      addons: [
+        {
+          name: "Item photos",
+          price: 100,
+        },
+        {
+          name: "Bubble wrap",
+          price: 50,
+        },
+      ],
+      processingFee: 100,
+      shipmentRate: 5000,
+    },
+    {
+      orderNumber: "O1888",
+      dateCreated: "02 March 2023",
+      trackingNumber: "TRN123451502",
+      trackingLink: "www.google.com",
+      deliveryAddress: {
+        fullName: "Pete Mugasa",
+        street1: "6682 Emerald Road",
+        city: "Harare",
+        zip: "00263",
+        country: "Zimbabwe",
+        phone: "0772448456",
+      },
+      processingFee: 100,
+      addons: [
+        {
+          name: "Item photos",
+          price: 100,
+        },
+        {
+          name: "Bubble wrap",
+          price: 50,
+        },
+      ],
+      courier: "Fedex",
+      shipmentRate: 5000,
+    },
   ];
+
+  const matchOrder = useMatch("/order/:id");
+  //order to be rendered when link is clicked
+  const order = matchOrder
+    ? orders.find((o) => o.orderNumber === matchOrder.params.id)
+    : null;
 
   //matching a specific route to a packing request
   const match = useMatch("/packing-requests/:id");
@@ -80,7 +173,7 @@ const App = () => {
   const navigate = useNavigate();
 
   //handle login
-  async function handleLogin(e) {
+  /* async function handleLogin(e) {
     e.preventDefault();
     try {
       const user = await loginService.login({ email, password });
@@ -126,31 +219,30 @@ const App = () => {
       console.log(exception);
     }
   }
-
+*/
   return (
     <>
-      {user ? (
-        <Navbar
-          packedItems={packedItems}
-          receivedParcel={receivedParcel}
-          handleLogout={handleLogout}
-        />
-      ) : null}
+      <Navbar
+        packedItems={packedItems}
+        receivedParcel={receivedParcel}
+        //handleLogout={handleLogout}
+      />
 
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
         <Route
           path="/received"
           element={
             <Received
-              user={user}
+              //user={user}
               setReceivedParcel={setReceivedParcel}
               receivedParcel={receivedParcel}
+              packingRequests={packingRequests}
+              setPackingRequests={setPackingRequests}
             />
           }
         />
 
-        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/profile" element={<Profile /*user={user}*/ />} />
 
         <Route
           path="/packing-requests"
@@ -160,6 +252,7 @@ const App = () => {
           path="/packing-requests/:id"
           element={<PackingRequestDetails packingRequest={packingRequest} />}
         />
+        <Route path="/additional-services" element={<AdditionalServices />} />
         <Route path="/ship" element={<Ship />} />
         <Route
           path="/shipment-rates"
@@ -174,6 +267,8 @@ const App = () => {
           path="/payment"
           element={<Payment selectedRate={selectedRate} />}
         />
+        <Route path="/orders" element={<Orders orders={orders} />} />
+        <Route path="/order/:id" element={<OrderDetails order={order} />} />
         <Route
           path="/login"
           element={
@@ -182,7 +277,7 @@ const App = () => {
               setEmail={setEmail}
               setPassword={setPassword}
               password={password}
-              handleLogin={handleLogin}
+              //handleLogin={handleLogin}
             />
           }
         />
@@ -194,10 +289,11 @@ const App = () => {
               setEmail={setEmail}
               setPassword={setPassword}
               password={password}
-              handleSignup={handleSignup}
+              // handleSignup={handleSignup}
             />
           }
         />
+        <Route path="/" element={<Home /*user={user}*/ />} />
       </Routes>
     </>
   );

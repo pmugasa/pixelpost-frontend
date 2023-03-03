@@ -38,7 +38,7 @@ const Navbar = ({ packedItems, receivedParcel, handleLogout }) => {
           </li>
 
           <li>
-            <Link to="/new-parcel">
+            <Link to="/packing-requests">
               <div className="indicator">
                 <span className="indicator-item indicator-end badge badge-xs badge-secondary">
                   {packedItems.length}
